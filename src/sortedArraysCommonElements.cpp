@@ -22,6 +22,45 @@ struct transaction {
 	char description[20];
 };
 
+int compare_date(char *first, char *second) {
+	int i = 6;
+	for (; first[i] != '\0'; i++) {
+		if (first[i] != second[i])
+			return first[i] - second[i];
+	}
+	for (i = 3; first[i] != '-'; i++) {
+		if (first[i] != second[i])
+			return first[i] - second[i];
+	}
+	for (i = 0; first[i] != '-'; i++) {
+		if (first[i] != second[i])
+			return first[i] - second[i];
+	}
+	return 0;
+}
+
 struct transaction * sortedArraysCommonElements(struct transaction *A, int ALen, struct transaction *B, int BLen) {
-	return NULL;
+	int a = 0, b = 0, current = 0, min = 0, c;
+	struct transaction *result = NULL;
+	if (A == NULL || B == NULL || ALen < 0 || BLen < 0)
+		return NULL;
+	min = ALen > BLen ? BLen : ALen;
+	result = (struct transaction *) malloc(sizeof(struct transaction) * min);
+	while (a < ALen && b < BLen) {
+		c = compare_date(A[a].date, B[b].date);
+		if (c == 0) {
+			result[current] = A[a];
+			current++;
+			a++;
+			b++;
+		}
+		else if (c < 0) {
+			a++;
+		}
+		else {
+			b++;
+		}
+	}
+	result = (struct transaction *) realloc(result, sizeof(struct transaction) * (current));
+	return result;
 }
